@@ -128,6 +128,52 @@ colors (void)
 }
 
 static GskRenderNode *
+colors_simple (void)
+{
+  const int width = 200;
+  const int height = 200;
+  GskRenderNode *container;
+  GskRenderNode *nodes[9];
+
+  nodes[0] = gsk_color_node_new (&(GdkRGBA){1, 0, 0, 1},
+                                 &GRAPHENE_RECT_INIT (0, 0, width, height));
+  nodes[1] = gsk_color_node_new (&(GdkRGBA){0, 1, 0, 1},
+                                 &GRAPHENE_RECT_INIT (width, 0, width, height));
+  nodes[2] = gsk_color_node_new (&(GdkRGBA){0, 0, 1, 1},
+                                 &GRAPHENE_RECT_INIT (width * 2, 0, width, height));
+  nodes[3] = gsk_color_node_new (&(GdkRGBA){1, 0, 0, 0.5},
+                                 &GRAPHENE_RECT_INIT (width * 3, 0, width, height));
+  nodes[4] = gsk_color_node_new (&(GdkRGBA){0, 1, 0, 0.5},
+                                 &GRAPHENE_RECT_INIT (width * 4, 0, width, height));
+  nodes[5] = gsk_color_node_new (&(GdkRGBA){0, 0, 1, 0.5},
+                                 &GRAPHENE_RECT_INIT (width * 5, 0, width, height));
+
+  /* Now draw some over others, checking that the blending works correctly. */
+  nodes[6] = gsk_color_node_new (&(GdkRGBA){0, 1, 0, 0.5},
+                                 &GRAPHENE_RECT_INIT (width * 2.5, height, width, height));
+  nodes[7] = gsk_color_node_new (&(GdkRGBA){1, 0, 0, 0.5},
+                                 &GRAPHENE_RECT_INIT (width * 2, height, width, height));
+  nodes[8] = gsk_color_node_new (&(GdkRGBA){0, 0, 1, 0.5},
+                                 &GRAPHENE_RECT_INIT (width * 3, height, width, height));
+
+
+
+  container = gsk_container_node_new (nodes, 9);
+
+  gsk_render_node_unref (nodes[0]);
+  gsk_render_node_unref (nodes[1]);
+  gsk_render_node_unref (nodes[2]);
+  gsk_render_node_unref (nodes[3]);
+  gsk_render_node_unref (nodes[4]);
+  gsk_render_node_unref (nodes[5]);
+  gsk_render_node_unref (nodes[6]);
+  gsk_render_node_unref (nodes[7]);
+  gsk_render_node_unref (nodes[8]);
+
+  return container;
+}
+
+static GskRenderNode *
 cairo (void)
 {
   GskRenderNode *node;
@@ -523,6 +569,7 @@ static const struct {
   GskRenderNode * (* func) (void);
 } functions[] = {
   { "colors.node", colors },
+  { "colors-simple.node", colors_simple },
   { "cairo.node", cairo },
   { "repeat.node", repeat },
   { "blendmode.node", blendmode },
